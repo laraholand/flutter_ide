@@ -1,27 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:ide/editor_provider.dart';
-import 'package:ide/setup/setup_screen.dart';
-import 'package:provider/provider.dart';
+import 'package:ide/screens/home_screen.dart';
+import 'package:ide/screens/setup_screen.dart';
+import 'package:ide/utils/file_utils.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool _isSdkSetup = false;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkSdk();
+  }
+
+  Future<void> _checkSdk() async {
+    final sdkExists = await checkFlutterSdkExists();
+    setState(() {
+      _isSdkSetup = sdkExists;
+      _isLoading = false;
+    });
+  }
+
+  void _onSetupComplete() {
+    setState(() {
+      _isSdkSetup = true;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => EditorProvider(),
-      child: MaterialApp(
-        title: 'Flutter IDE',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        home: const SetupScreen(),
+    return MaterialApp(
+      title: 'Flutter IDE',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
+      home: _isLoading
+          ? const Scaffold(body: Center(child: CircularProgressIndicator()))
+          : _isSdkSetup
+              ? const HomeScreen()
+              : SetupScreen(onSetupComplete: _onSetupComplete),
     );
   }
 }
