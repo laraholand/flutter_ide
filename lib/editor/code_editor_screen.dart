@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:code_forge/code_forge.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_highlight/themes/monokai-sublime.dart';
 import 'package:ide/editor_provider.dart';
 import 'package:provider/provider.dart';
 

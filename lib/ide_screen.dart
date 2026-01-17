@@ -8,7 +8,6 @@ import 'package:ide/editor/code_editor_screen.dart';
 import 'package:ide/editor_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
-import 'package:process_run/process_run.dart';
 import 'package:provider/provider.dart';
 
 class IdeScreen extends StatefulWidget {
@@ -48,10 +47,9 @@ class _IdeScreenState extends State<IdeScreen> with TickerProviderStateMixin {
     final projectPath = '${projectsDir.path}/$projectName';
     final flutterExecutable = '${appDir.path}/flutter/bin/flutter';
 
-    final shell = Shell();
     try {
-      await shell.run(
-          '$flutterExecutable create --project-name $projectName $projectPath');
+      await Process.run(
+          flutterExecutable, ['create', '--project-name', projectName, projectPath]);
       setState(() {
         _projectPath = projectPath;
       });
@@ -69,7 +67,6 @@ class _IdeScreenState extends State<IdeScreen> with TickerProviderStateMixin {
     if (_projectPath == null) return;
     final flutterExecutable =
         '${(await getApplicationSupportDirectory()).path}/flutter/bin/flutter';
-    final shell = Shell(workingDirectory: _projectPath);
     final process = await Process.start(flutterExecutable,
         ['run', '-d', 'web-server', '--web-port', '8080'],
         workingDirectory: _projectPath);
@@ -101,9 +98,9 @@ class _IdeScreenState extends State<IdeScreen> with TickerProviderStateMixin {
     if (_projectPath == null) return;
     final flutterExecutable =
         '${(await getApplicationSupportDirectory()).path}/flutter/bin/flutter';
-    final shell = Shell(workingDirectory: _projectPath);
     try {
-      await shell.run('$flutterExecutable pub get');
+      await Process.run('$flutterExecutable', ['pub', 'get'],
+          workingDirectory: _projectPath);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
