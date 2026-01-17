@@ -1,0 +1,50 @@
+# name: Deploy Flutter Web
+
+# on:
+  # push:
+    # branches:
+      # - main
+
+# jobs:
+  # build-and-deploy:
+    # runs-on: ubuntu-latest
+
+    # steps:
+      # # 1️⃣ Checkout the code
+      # - name: Checkout code
+        # uses: actions/checkout@v4
+
+      # # 2️⃣ Set up Flutter with caching enabled
+      # - name: Set up Flutter
+        # uses: subosito/flutter-action@v2
+        # with:
+          # flutter-version: "3.38.5"
+          # cache: true
+
+      # # 3️⃣ Cache Pub packages + Flutter build cache
+      # - name: Cache dependencies and build
+        # uses: actions/cache@v4
+        # with:
+          # path: |
+            # ~/.pub-cache
+            # build
+            # .dart_tool
+          # key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.lock') }}
+          # restore-keys: |
+            # ${{ runner.os }}-flutter-
+
+      # # 4️⃣ Install dependencies
+      # - name: Install dependencies
+        # run: flutter pub get
+
+      # # 5️⃣ Build Web (optimized flags)
+      # - name: Build Web
+        # run: flutter build web --release --base-href "/ItemRDC/" --pwa-strategy=none
+
+      # # 6️⃣ Deploy to GitHub Pages (incremental)
+      # - name: Deploy to GitHub Pages
+        # uses: peaceiris/actions-gh-pages@v4
+        # with:
+          # github_token: ${{ secrets.GITHUB_TOKEN }}
+          # publish_dir: ./build/web
+          # keep_files: true
