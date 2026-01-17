@@ -91,8 +91,8 @@ class _FlutterSetupScreenState extends State<FlutterSetupScreen> {
       });
 
       try {
-        final inputStream = InputFileStream(zipFilePath);
-        final archive = ZipDecoder().decodeBuffer(inputStream);
+                final bytes = await File(zipFilePath).readAsBytes();
+        final archive = ZipDecoder().decodeBytes(bytes, verify: true);
 
         int extractedFiles = 0;
         int totalFiles = archive.files.length;
