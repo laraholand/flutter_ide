@@ -1,12 +1,4 @@
-
-  error • Target of URI doesn't exist: 'package:example/finder.dart' • example/code_forge-5.2.0/example/lib/main.dart:2:8 • uri_does_not_exist
-  error • Target of URI doesn't exist: 'package:google_fonts/google_fonts.dart' • example/code_forge-5.2.0/example/lib/main.dart:6:8 • uri_does_not_exist
-  error • Undefined name 'GoogleFonts' • example/code_forge-5.2.0/example/lib/main.dart:78:28 • undefined_identifier
-  error • The method 'FindPanelView' isn't defined for the type '_MyAppState' • example/code_forge-5.2.0/example/lib/main.dart:89:21 • undefined_method
-  error • Target of URI doesn't exist: 'package:example/main.dart' • example/code_forge-5.2.0/example/test/widget_test.dart:11:8 • uri_does_not_exist
-  error • The name 'MyApp' isn't a class • example/code_forge-5.2.0/example/test/widget_test.dart:16:35 • creation_with_non_type
-   info • Unnecessary use of multiple underscores • example/code_forge-5.2.0/lib/code_forge/code_area.dart:1799:44 • unnecessary_underscores
-   info • Unnecessary use of multiple underscores • example/code_forge-5.2.0/lib/code_forge/code_area.dart:1802:51 • unnecessary_underscores
+Analyzing flutter_ide...                                        
    info • Library names are not necessary • lib/dynamic_tabbar.dart:5:9 • unnecessary_library_name
    info • Missing type annotation • lib/dynamic_tabbar.dart:385:3 • strict_top_level_inference
    info • Missing type annotation • lib/dynamic_tabbar.dart:396:3 • strict_top_level_inference
@@ -15,6 +7,4 @@ warning • Unused import: 'package:file_tree_view/file_tree_view.dart' • lib/
   error • The method 'undo' isn't defined for the type 'CodeForgeController' • lib/ide_screen.dart:140:70 • undefined_method
   error • The method 'redo' isn't defined for the type 'CodeForgeController' • lib/ide_screen.dart:144:70 • undefined_method
   error • The method 'FileTreeView' isn't defined for the type '_IdeScreenState' • lib/ide_screen.dart:196:26 • undefined_method
-
-16 issues found. (ran in 13.7s)
-Error: Process completed with exit code 1.
+8 issues found. (ran in 11.8s)

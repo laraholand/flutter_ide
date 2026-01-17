@@ -1,3 +1,4 @@
+
 import 'dart:io';
 
 import 'package:code_forge/code_forge.dart';
@@ -10,8 +11,7 @@ class EditorProvider with ChangeNotifier {
   int _currentIndex = -1;
 
   LspConfig? _lspConfig;
-
-  LspConfig? get lspConfig => _lspConfig;
+  UndoRedoController? _undoRedoController;
 
   List<File> get openFiles => _openFiles;
   Map<String, String> get fileContents => _fileContents;
@@ -27,13 +27,21 @@ class EditorProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void setUndoRedoController(UndoRedoController undoRedoController) {
+    _undoRedoController = undoRedoController;
+    notifyListeners();
+  }
+
   Future<void> openFile(File file) async {
     if (!_openFiles.contains(file)) {
       _openFiles.add(file);
       _currentIndex = _openFiles.length - 1;
       final content = await file.readAsString();
       _fileContents[file.path] = content;
-      _controllers[file.path] = CodeForgeController(lspConfig: _lspConfig);
+      _controllers[file.path] = CodeForgeController(
+        lspConfig: _lspConfig,
+        undoController: _undoRedoController,
+      );
       _controllers[file.path]?.text = content;
       notifyListeners();
     } else {
@@ -74,7 +82,6 @@ class EditorProvider with ChangeNotifier {
 
   @override
   void dispose() {
-    _lspConfig?.dispose();
     super.dispose();
   }
 }

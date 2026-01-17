@@ -1,6 +1,6 @@
-
 import 'dart:io';
 
+import 'package:code_forge/code_forge.dart';
 import 'package:file_tree_view/file_tree_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -24,11 +24,15 @@ class _IdeScreenState extends State<IdeScreen> with TickerProviderStateMixin {
   Process? _runningProcess;
   bool _isRunning = false;
   InAppWebViewController? _webViewController;
+  LspConfig? _lspConfig;
+  final UndoRedoController _undoRedoController = UndoRedoController();
 
   @override
   void dispose() {
     _tabController?.dispose();
     _runningProcess?.kill();
+    _lspConfig?.dispose();
+    _undoRedoController.dispose();
     super.dispose();
   }
 
@@ -50,6 +54,17 @@ class _IdeScreenState extends State<IdeScreen> with TickerProviderStateMixin {
     try {
       await Process.run(
           flutterExecutable, ['create', '--project-name', projectName, projectPath]);
+
+      _lspConfig = await LspStdioConfig.start(
+        executable: '${appDir.path}/flutter/bin/cache/dart-sdk/bin/dart',
+        args: ["language-server", "--protocol=lsp"],
+        workspacePath: projectPath,
+        languageId: "dart",
+      );
+      final editorProvider =
+          Provider.of<EditorProvider>(context, listen: false);
+      editorProvider.setLspConfig(_lspConfig!);
+
       setState(() {
         _projectPath = projectPath;
       });
@@ -137,11 +152,11 @@ class _IdeScreenState extends State<IdeScreen> with TickerProviderStateMixin {
               if (_projectPath != null) ...[
                 IconButton(
                   icon: const Icon(Icons.undo),
-                  onPressed: () => editorProvider.currentController?.undo(),
+                  onPressed: () => _undoRedoController.undo(),
                 ),
                 IconButton(
                   icon: const Icon(Icons.redo),
-                  onPressed: () => editorProvider.currentController?.redo(),
+                  onPressed: () => _undoRedoController.redo(),
                 ),
                 IconButton(
                   icon: const Icon(Icons.save),
@@ -193,9 +208,9 @@ class _IdeScreenState extends State<IdeScreen> with TickerProviderStateMixin {
           ),
           drawer: _projectPath != null
               ? Drawer(
-                  child: FileTreeView(
-                    directory: Directory(_projectPath!),
-                    onFileTap: (file) {
+                  child: DirectoryTreeViewer(
+                    rootPath: _projectPath!,
+                    onFileTap: (file, details) {
                       editorProvider.openFile(file);
                       Navigator.pop(context); // Close the drawer
                     },
@@ -251,6 +266,8 @@ class _IdeScreenState extends State<IdeScreen> with TickerProviderStateMixin {
                               children: editorProvider.openFiles.map((file) {
                                 return CodeEditorScreen(
                                   file: file,
+                                  lspConfig: _lspConfig,
+                                  undoRedoController: _undoRedoController,
                                 );
                               }).toList(),
                             ),
