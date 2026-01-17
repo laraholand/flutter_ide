@@ -33,7 +33,8 @@ class EditorProvider with ChangeNotifier {
       _currentIndex = _openFiles.length - 1;
       final content = await file.readAsString();
       _fileContents[file.path] = content;
-      _controllers[file.path] = CodeForgeController(text: content, lspConfig: _lspConfig);
+      _controllers[file.path] = CodeForgeController(lspConfig: _lspConfig);
+      _controllers[file.path]?.text = content;
       notifyListeners();
     } else {
       _currentIndex = _openFiles.indexOf(file);

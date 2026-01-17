@@ -22,12 +22,6 @@ class CodeEditorScreen extends StatelessWidget {
 
     final editor = CodeForge(
       controller: controller,
-      initialValue: controller.text,
-      language: 'dart',
-      theme: monokaiSublimeTheme,
-      onChanged: (value) {
-        editorProvider.updateFileContent(file.path, value);
-      },
     );
 
     return Scaffold(

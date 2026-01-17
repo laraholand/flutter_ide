@@ -1,20 +1,100 @@
-/home/runner/work/flutter_ide/flutter_ide/lib/main.dart:2:8: Error: Target of URI doesn't exist: 'package:example/finder.dart'
-/home/runner/work/flutter_ide/flutter_ide/lib/main.dart:6:8: Error: Target of URI doesn't exist: 'package:google_fonts/google_fonts.dart'
-/home/runner/work/flutter_ide/flutter_ide/lib/main.dart:78:28: Error: Undefined name 'GoogleFonts'.
-/home/runner/work/flutter_ide/flutter_ide/lib/main.dart:89:21: Error: The method 'FindPanelView' isn't defined for the class '_MyAppState'.
-/home/runner/work/flutter_ide/flutter_ide/lib/screens/code_editor_screen.dart:31:37: Error: The method 'fromJson' isn't defined for the class 'LspErrors'.
-/home/runner/work/flutter_ide/flutter_ide/lib/screens/code_editor_screen.dart:52:7: Error: The named parameter 'initialValue' isn't defined.
-/home/runner/work/flutter_ide/flutter_ide/lib/screens/code_editor_screen.dart:53:17: Error: The argument type 'String' can't be assigned to the parameter type 'Mode?'.
-/home/runner/work/flutter_ide/flutter_ide/lib/screens/code_editor_screen.dart:54:7: Error: The named parameter 'theme' isn't defined.
-/home/runner/work/flutter_ide/flutter_ide/lib/screens/code_editor_screen.dart:55:7: Error: The named parameter 'lspConfig' isn't defined.
-/home/runner/work/flutter_ide/flutter_ide/lib/screens/code_editor_screen.dart:56:7: Error: The named parameter 'diagnostics' isn't defined.
-/home/runner/work/flutter_ide/flutter_ide/lib/screens/code_editor_screen.dart:57:7: Error: The named parameter 'onChanged' isn't defined.
-/home/runner/work/flutter_ide/flutter_ide/lib/providers/editor_provider.dart:30:20: Error: The method 'LspStdio' isn't defined for the class 'EditorProvider'.
-/home/runner/work/flutter_ide/flutter_ide/lib/providers/editor_provider.dart:46:53: Error: The named parameter 'text' isn't defined.
-/home/runner/work/flutter_ide/flutter_ide/lib/screens/ide_screen.dart:74:33: Error: The method 'start' isn't defined for the class 'Shell'.
-/home/runner/work/flutter_ide/flutter_ide/lib/screens/ide_screen.dart:142:25: Error: The method 'undo' isn't defined for the class 'CodeForgeController'.
-/home/runner/work/flutter_ide/flutter_ide/lib/screens/ide_screen.dart:146:25: Error: The method 'redo' isn't defined for the class 'CodeForgeController'.
-/home/runner/work/flutter_ide/flutter_ide/lib/screens/ide_screen.dart:198:26: Error: The method 'FileTreeView' isn't defined for the class '_IdeScreenState'.
-/home/runner/work/flutter_ide/flutter_ide/lib/screens/setup_screen.dart:45:36: Error: The method 'decodeBuffer' isn't defined for the class 'ZipDecoder'.
-/home/runner/work/flutter_ide/flutter_ide/test/widget_test.dart:11:8: Error: Target of URI doesn't exist: 'package:example/main.dart'
-/home/runner/work/flutter_ide/flutter_ide/test/widget_test.dart:16:35: Error: 'MyApp' isn't a class.
+error • Target of URI doesn't exist: 'package:example/finder.dart' • example/code_forge-5.2.0/example/lib/main.dart:2:8 • uri_does_not_exist
+  error • Target of URI doesn't exist: 'package:google_fonts/google_fonts.dart' • example/code_forge-5.2.0/example/lib/main.dart:6:8 • uri_does_not_exist
+  error • Undefined name 'GoogleFonts' • example/code_forge-5.2.0/example/lib/main.dart:78:28 • undefined_identifier
+  error • The method 'FindPanelView' isn't defined for the type '_MyAppState' • example/code_forge-5.2.0/example/lib/main.dart:89:21 • undefined_method
+  error • Target of URI doesn't exist: 'package:example/main.dart' • example/code_forge-5.2.0/example/test/widget_test.dart:11:8 • uri_does_not_exist
+  error • The name 'MyApp' isn't a class • example/code_forge-5.2.0/example/test/widget_test.dart:16:35 • creation_with_non_type
+   info • Unnecessary use of multiple underscores • example/code_forge-5.2.0/lib/code_forge/code_area.dart:1799:44 • unnecessary_underscores
+   info • Unnecessary use of multiple underscores • example/code_forge-5.2.0/lib/code_forge/code_area.dart:1802:51 • unnecessary_underscores
+   info • Library names are not necessary • lib/dynamic_tabbar.dart:5:9 • unnecessary_library_name
+   info • Missing type annotation • lib/dynamic_tabbar.dart:385:3 • strict_top_level_inference
+   info • Missing type annotation • lib/dynamic_tabbar.dart:396:3 • strict_top_level_inference
+  error • The named parameter 'initialValue' isn't defined • lib/editor/code_editor_screen.dart:25:7 • undefined_named_parameter
+  error • The argument type 'String' can't be assigned to the parameter type 'Mode?'.  • lib/editor/code_editor_screen.dart:26:17 • argument_type_not_assignable
+  error • The named parameter 'theme' isn't defined • lib/editor/code_editor_screen.dart:27:7 • undefined_named_parameter
+  error • The named parameter 'onChanged' isn't defined • lib/editor/code_editor_screen.dart:28:7 • undefined_named_parameter
+  error • The named parameter 'text' isn't defined • lib/editor_provider.dart:36:53 • undefined_named_parameter
+  error • Undefined name '_lspConfig' • lib/ide_screen.dart:33:5 • undefined_identifier
+  error • Expected to find ';' • lib/ide_screen.dart:56:3 • expected_token
+  error • Undefined name 'import' • lib/ide_screen.dart:56:3 • undefined_identifier
+  error • Expected to find ';' • lib/ide_screen.dart:58:1 • expected_token
+  error • Undefined name 'import' • lib/ide_screen.dart:58:1 • undefined_identifier
+  error • Expected to find ';' • lib/ide_screen.dart:59:1 • expected_token
+  error • Undefined name 'import' • lib/ide_screen.dart:59:1 • undefined_identifier
+  error • Expected to find ';' • lib/ide_screen.dart:60:1 • expected_token
+  error • Undefined name 'import' • lib/ide_screen.dart:60:1 • undefined_identifier
+  error • Expected to find ';' • lib/ide_screen.dart:61:1 • expected_token
+  error • Undefined name 'import' • lib/ide_screen.dart:61:1 • undefined_identifier
+  error • Expected to find ';' • lib/ide_screen.dart:62:1 • expected_token
+  error • Undefined name 'import' • lib/ide_screen.dart:62:1 • undefined_identifier
+  error • Expected to find ';' • lib/ide_screen.dart:63:1 • expected_token
+  error • Undefined name 'import' • lib/ide_screen.dart:63:1 • undefined_identifier
+  error • Expected to find ';' • lib/ide_screen.dart:64:1 • expected_token
+  error • Undefined name 'import' • lib/ide_screen.dart:64:1 • undefined_identifier
+  error • The name 'p' isn't a type, so it can't be used in an 'as' expression • lib/ide_screen.dart:64:36 • cast_to_non_type
+  error • Expected to find ';' • lib/ide_screen.dart:65:1 • expected_token
+  error • Undefined name 'import' • lib/ide_screen.dart:65:1 • undefined_identifier
+  error • Expected to find ';' • lib/ide_screen.dart:66:1 • expected_token
+  error • Undefined name 'import' • lib/ide_screen.dart:66:1 • undefined_identifier
+  error • Expected to find ';' • lib/ide_screen.dart:67:1 • expected_token
+  error • Undefined name 'import' • lib/ide_screen.dart:67:1 • undefined_identifier
+  error • 'class' can't be used as an identifier because it's a keyword • lib/ide_screen.dart:69:1 • expected_identifier_but_got_keyword
+  error • Expected a statement • lib/ide_screen.dart:69:1 • missing_statement
+  error • Expected to find ';' • lib/ide_screen.dart:69:1 • expected_token
+  error • Undefined name 'class' • lib/ide_screen.dart:69:1 • undefined_identifier
+  error • Expected to find ';' • lib/ide_screen.dart:69:7 • expected_token
+  error • 'extends' can't be used as an identifier because it's a keyword • lib/ide_screen.dart:69:17 • expected_identifier_but_got_keyword
+  error • Expected a statement • lib/ide_screen.dart:69:17 • missing_statement
+  error • Expected to find ';' • lib/ide_screen.dart:69:17 • expected_token
+  error • Undefined name 'extends' • lib/ide_screen.dart:69:17 • undefined_identifier
+  error • Expected to find ';' • lib/ide_screen.dart:69:25 • expected_token
+  error • Too many positional arguments: 0 expected, but 1 found • lib/ide_screen.dart:70:19 • extra_positional_arguments_could_be_named
+  error • Invalid constant value • lib/ide_screen.dart:70:20 • invalid_constant
+  error • The getter 'key' isn't defined in a superclass of '_IdeScreenState' • lib/ide_screen.dart:70:26 • undefined_super_member
+warning • The declaration 'createState' isn't referenced • lib/ide_screen.dart:73:20 • unused_element
+  error • 'class' can't be used as an identifier because it's a keyword • lib/ide_screen.dart:76:1 • expected_identifier_but_got_keyword
+  error • Expected a statement • lib/ide_screen.dart:76:1 • missing_statement
+  error • Expected to find ';' • lib/ide_screen.dart:76:1 • expected_token
+  error • Undefined name 'class' • lib/ide_screen.dart:76:1 • undefined_identifier
+  error • Expected to find ';' • lib/ide_screen.dart:76:7 • expected_token
+  error • 'extends' can't be used as an identifier because it's a keyword • lib/ide_screen.dart:76:23 • expected_identifier_but_got_keyword
+  error • Expected a statement • lib/ide_screen.dart:76:23 • missing_statement
+  error • Expected to find ';' • lib/ide_screen.dart:76:23 • expected_token
+  error • Undefined name 'extends' • lib/ide_screen.dart:76:23 • undefined_identifier
+  error • The operator '<' isn't defined for the type 'Type' • lib/ide_screen.dart:76:36 • undefined_operator
+  error • A comparison expression can't be an operand of another comparison expression • lib/ide_screen.dart:76:46 • equality_cannot_be_equality_operand
+  error • 'with' can't be used as an identifier because it's a keyword • lib/ide_screen.dart:76:48 • expected_identifier_but_got_keyword
+  error • Expected to find ';' • lib/ide_screen.dart:76:48 • expected_token
+  error • Undefined name 'with' • lib/ide_screen.dart:76:48 • undefined_identifier
+  error • Expected to find ';' • lib/ide_screen.dart:76:53 • expected_token
+   info • The local variable '_projectNameController' starts with an underscore • lib/ide_screen.dart:77:9 • no_leading_underscores_for_local_identifiers
+   info • The local variable '_projectPath' starts with an underscore • lib/ide_screen.dart:78:11 • no_leading_underscores_for_local_identifiers
+   info • The local variable '_tabController' starts with an underscore • lib/ide_screen.dart:79:18 • no_leading_underscores_for_local_identifiers
+   info • The local variable '_runningProcess' starts with an underscore • lib/ide_screen.dart:80:12 • no_leading_underscores_for_local_identifiers
+   info • The local variable '_isRunning' starts with an underscore • lib/ide_screen.dart:81:8 • no_leading_underscores_for_local_identifiers
+   info • The local variable '_webViewController' starts with an underscore • lib/ide_screen.dart:82:27 • no_leading_underscores_for_local_identifiers
+   info • The local variable '_lspConfig' starts with an underscore • lib/ide_screen.dart:83:14 • no_leading_underscores_for_local_identifiers
+warning • The declaration 'dispose' isn't referenced • lib/ide_screen.dart:86:8 • unused_element
+   info • The local variable '_createProject' starts with an underscore • lib/ide_screen.dart:93:16 • no_leading_underscores_for_local_identifiers
+   info • Don't use 'BuildContext's across async gaps • lib/ide_screen.dart:120:39 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/ide_screen.dart:127:28 • use_build_context_synchronously
+   info • The local variable '_runApp' starts with an underscore • lib/ide_screen.dart:136:16 • no_leading_underscores_for_local_identifiers
+warning • The value of the local variable 'shell' isn't used • lib/ide_screen.dart:140:11 • unused_local_variable
+   info • The local variable '_stopApp' starts with an underscore • lib/ide_screen.dart:152:16 • no_leading_underscores_for_local_identifiers
+   info • The local variable '_hotReload' starts with an underscore • lib/ide_screen.dart:160:16 • no_leading_underscores_for_local_identifiers
+   info • The local variable '_hotRestart' starts with an underscore • lib/ide_screen.dart:164:16 • no_leading_underscores_for_local_identifiers
+   info • The local variable '_pubGet' starts with an underscore • lib/ide_screen.dart:168:16 • no_leading_underscores_for_local_identifiers
+warning • The declaration 'build' isn't referenced • lib/ide_screen.dart:192:10 • unused_element
+  error • The method 'undo' isn't defined for the type 'CodeForgeController' • lib/ide_screen.dart:211:70 • undefined_method
+  error • The method 'redo' isn't defined for the type 'CodeForgeController' • lib/ide_screen.dart:215:70 • undefined_method
+  error • The method 'FileTreeView' isn't defined for the type '_IdeScreenState' • lib/ide_screen.dart:267:26 • undefined_method
+   info • Don't use 'BuildContext's across async gaps • lib/ide_screen.dart:350:28 • use_build_context_synchronously
+warning • The value of the local variable 'shell' isn't used • lib/ide_screen.dart:363:11 • unused_local_variable
+   info • Don't use 'BuildContext's across async gaps • lib/ide_screen.dart:398:28 • use_build_context_synchronously
+  error • The method 'undo' isn't defined for the type 'CodeForgeController' • lib/ide_screen.dart:433:70 • undefined_method
+  error • The method 'redo' isn't defined for the type 'CodeForgeController' • lib/ide_screen.dart:437:70 • undefined_method
+  error • The method 'FileTreeView' isn't defined for the type '_IdeScreenState' • lib/ide_screen.dart:489:26 • undefined_method
+warning • The value of the local variable 'inputStream' isn't used • lib/setup/setup_screen.dart:44:13 • unused_local_variable
+
+97 issues found. (ran in 13.9s)
+Error: Process completed with exit code 1.

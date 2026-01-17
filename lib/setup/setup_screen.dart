@@ -41,7 +41,6 @@ class _SetupScreenState extends State<SetupScreen> {
       final appDir = await getApplicationSupportDirectory();
       final zipFile = File(result.files.single.path!);
 
-      final inputStream = InputFileStream(zipFile.path);
       final archive = ZipDecoder().decodeBytes(zipFile.readAsBytesSync());
 
       for (var i = 0; i < archive.length; i++) {
