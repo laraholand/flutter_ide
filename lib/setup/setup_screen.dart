@@ -42,7 +42,7 @@ class _SetupScreenState extends State<SetupScreen> {
       final zipFile = File(result.files.single.path!);
 
       final inputStream = InputFileStream(zipFile.path);
-      final archive = ZipDecoder().decodeBuffer(inputStream);
+      final archive = ZipDecoder().decodeBytes(zipFile.readAsBytesSync());
 
       for (var i = 0; i < archive.length; i++) {
         final file = archive[i];

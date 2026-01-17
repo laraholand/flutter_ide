@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:code_forge/code_forge.dart';
 import 'package:flutter/material.dart';
-import 'package:ide/lsp/lsp_service.dart';
 
 class EditorProvider with ChangeNotifier {
   final List<File> _openFiles = [];
@@ -10,7 +9,6 @@ class EditorProvider with ChangeNotifier {
   final Map<String, CodeForgeController> _controllers = {};
   int _currentIndex = -1;
 
-  final LspService _lspService = LspService();
   LspConfig? _lspConfig;
 
   LspConfig? get lspConfig => _lspConfig;
@@ -24,17 +22,9 @@ class EditorProvider with ChangeNotifier {
   CodeForgeController? get currentController =>
       currentFile != null ? _controllers[currentFile!.path] : null;
 
-  Future<void> initializeLsp(String projectPath) async {
-    final process = await _lspService.start();
-    if (process != null) {
-      _lspConfig = LspStdio(
-        process: process,
-        workspacePath: projectPath,
-        languageId: 'dart',
-      );
-      await _lspConfig!.initialize();
-      notifyListeners();
-    }
+  void setLspConfig(LspConfig lspConfig) {
+    _lspConfig = lspConfig;
+    notifyListeners();
   }
 
   Future<void> openFile(File file) async {
@@ -43,8 +33,7 @@ class EditorProvider with ChangeNotifier {
       _currentIndex = _openFiles.length - 1;
       final content = await file.readAsString();
       _fileContents[file.path] = content;
-      _controllers[file.path] = CodeForgeController(text: content);
-      _lspConfig?.openDocument(file.path);
+      _controllers[file.path] = CodeForgeController(text: content, lspConfig: _lspConfig);
       notifyListeners();
     } else {
       _currentIndex = _openFiles.indexOf(file);
@@ -54,7 +43,6 @@ class EditorProvider with ChangeNotifier {
 
   void closeFile(int index) {
     final file = _openFiles[index];
-    _lspConfig?.closeDocument(file.path);
     _fileContents.remove(file.path);
     _controllers[file.path]?.dispose();
     _controllers.remove(file.path);
@@ -72,7 +60,6 @@ class EditorProvider with ChangeNotifier {
 
   void updateFileContent(String filePath, String content) {
     _fileContents[filePath] = content;
-    _lspConfig?.updateDocument(filePath, content);
   }
 
   Future<void> saveCurrentFile() async {
@@ -80,14 +67,13 @@ class EditorProvider with ChangeNotifier {
       final content = _controllers[currentFile!.path]?.text;
       if (content != null) {
         await currentFile!.writeAsString(content);
-        _lspConfig?.saveDocument(currentFile!.path, content);
       }
     }
   }
 
   @override
   void dispose() {
-    _lspConfig?.shutdown().then((_) => _lspConfig?.exitServer());
+    _lspConfig?.dispose();
     super.dispose();
   }
 }
