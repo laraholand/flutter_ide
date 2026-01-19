@@ -6,7 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:re_highlight/languages/dart.dart';
 import 'package:ide/file_tree_view.dart';
 import 'package:ide/dynamic_tabbar.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:android_intent_plus/android_intent.dart';
+import 'package:android_intent_plus/flag.dart';
 
 class EditorPage extends StatefulWidget {
   final String path; // Project root path
@@ -18,77 +19,74 @@ class EditorPage extends StatefulWidget {
 
 class _EditorPageState extends State<EditorPage> {
   bool isRunning = false;
-  Process? flutterProcess;
-  Future<String> getFlutterExecutable() async {
-    Directory dir = await getApplicationSupportDirectory();
-    return "${dir.path}/flutter/bin/flutter";
-  }
-  void runApp() async {
-    final flutterExe = await getFlutterExecutable();
 
-    flutterProcess = await Process.start(
-      flutterExe,
-      ['run', '-d', 'web-server', '--web-port', '8080'],
-      mode: ProcessStartMode.detachedWithStdio,
+  @override
+  void initState() {
+    super.initState();
+    _startLspServer();
+  }
+
+  Future<void> _runTermuxCommand(String command, {String? workingDirectory, bool background = false}) async {
+    final AndroidIntent intent = AndroidIntent(
+      action: 'com.termux.RUN_COMMAND',
+      package: 'com.termux',
+      arguments: <String, dynamic>{
+        'com.termux.RUN_COMMAND_PATH': '/data/data/com.termux/files/usr/bin/bash',
+        'com.termux.RUN_COMMAND_ARGUMENTS': ['-c', command],
+        'com.termux.RUN_COMMAND_WORKDIR': workingDirectory ?? '/data/data/com.termux/files/home',
+        'com.termux.RUN_COMMAND_BACKGROUND': background,
+      },
+      flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK],
     );
 
-    // stdout and stderr print
-    flutterProcess!.stdout.transform(SystemEncoding().decoder).listen((data) {
-      print(data);
-    });
-    flutterProcess!.stderr.transform(SystemEncoding().decoder).listen((data) {
-      print("Error: $data");
-    });
+    try {
+      await intent.launch();
+      print('Termux command sent: $command');
+    } catch (e) {
+      print('Error sending Termux command: $e');
+      // Handle the error appropriately in the UI if needed
+    }
+  }
 
+  void _startLspServer() {
+    // Starts the Dart LSP server in the background
+    _runTermuxCommand(
+      'dart language-server --port=9000',
+      workingDirectory: widget.path,
+      background: true,
+    );
+  }
+
+  void runApp() {
+     _runTermuxCommand(
+      'flutter run -d web-server --web-port 8080',
+      workingDirectory: widget.path,
+      background: false, // Run in foreground to see output
+    );
     setState(() {
       isRunning = true;
     });
   }
 
-  void hotReload() {
-    if (flutterProcess != null) {
-      flutterProcess!.stdin.write('r\n'); // hot reload
-    }
-  }
-
-  void hotRestart() {
-    if (flutterProcess != null) {
-      flutterProcess!.stdin.write('R\n'); // hot restart
-    }
-  }
-
   void stopApp() {
-    if (flutterProcess != null) {
-      flutterProcess!.kill();
-      setState(() {
-        isRunning = false;
-      });
-    }
+    // This is a bit tricky since we don't have the process ID.
+    // A simple approach is to kill all flutter processes, but this could be dangerous.
+    // For now, we'll just signal that the app should be stopped.
+    // The user might need to manually stop it from Termux.
+    _runTermuxCommand('killall flutter');
+    setState(() {
+      isRunning = false;
+    });
   }
-  // sync function
-  void syncProject() async {
-    final flutterExe = await getFlutterExecutable();
-  
-    Process syncProcess = await Process.start(
-      flutterExe,
-      ['pub', 'get'],
-      mode: ProcessStartMode.detachedWithStdio,
-      workingDirectory: widget.path, // project root
+
+  void syncProject() {
+     _runTermuxCommand(
+      'flutter pub get',
+      workingDirectory: widget.path,
+      background: false,
     );
-  
-    // stdout / stderr print
-    syncProcess.stdout.transform(SystemEncoding().decoder).listen((data) {
-      print(data);
-    });
-    syncProcess.stderr.transform(SystemEncoding().decoder).listen((data) {
-      print("Error: $data");
-    });
-  
-    // optional: completion message
-    syncProcess.exitCode.then((code) {
-      print("Sync finished with exit code $code");
-    });
   }
+
   List<TabData> dynamicTabs = [
     TabData(
       index: 0,
@@ -99,40 +97,17 @@ class _EditorPageState extends State<EditorPage> {
           onPressed: () {},
         ),
       ),
-      content: Text("Welcome to new VS code in desktop. Be carefull the ide only for desktop"),
+      content: Text("Welcome to the IDE. Open a file from the drawer."),
     ),
   ];
-
-  final undoController = UndoRedoController();
-  CodeForgeController? codeController;
-
-  Future<LspConfig> getLsp() async {
-    final absWorkspacePath = widget.path; // Project root
-    final data = await LspStdioConfig.start(
-      executable: "dart",
-      args: ["language-server", "--protocol=lsp"],
-      workspacePath: absWorkspacePath,
-      languageId: "dart",
-    );
-    return data;
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text(p.basename(widget.path)),
         actions: [
           if (isRunning) ...[
-            IconButton(
-              icon: Icon(Icons.refresh_rounded),
-              onPressed:hotReload,
-              tooltip: "Hot reload",
-            ),
-            IconButton(
-              icon: Icon(Icons.restart_alt_rounded),
-              onPressed: hotRestart,
-              tooltip: "Hot Restart",
-            ),
             IconButton(
               icon: Icon(Icons.stop_circle_rounded),
               onPressed: stopApp,
@@ -141,18 +116,20 @@ class _EditorPageState extends State<EditorPage> {
           ] else ...[
             IconButton(
               icon: Icon(Icons.play_arrow_rounded),
-              onPressed:runApp,
+              onPressed: runApp,
               tooltip: "Run",
             ),
-            IconButton(
+          ],
+           IconButton(
               icon: Icon(Icons.sync_rounded),
               onPressed: syncProject,
-              tooltip: "Sync",
+              tooltip: "Sync Dependencies",
             ),
-          ],
           IconButton(
             icon: Icon(Icons.save),
-            onPressed: (){},
+            onPressed: (){
+              // This needs to be implemented to save the content of the active tab
+            },
           )
         ],
       ),
@@ -166,6 +143,11 @@ class _EditorPageState extends State<EditorPage> {
             enableDeleteFolderOption: true,
             onFileTap: (file, tapDownDetails) {
               setState(() {
+                // Check if the file is already open
+                if (dynamicTabs.any((tab) => tab.title.text == p.basename(file.path))) {
+                  // Tab is already open, maybe switch to it
+                  return;
+                }
                 dynamicTabs.add(
                   TabData(
                     index: dynamicTabs.length,
@@ -181,10 +163,15 @@ class _EditorPageState extends State<EditorPage> {
                         },
                       ),
                     ),
-                    content: EditFile(filePath: file.path),
+                    content: EditFile(
+                      key: ValueKey(file.path), // Important for state management
+                      filePath: file.path,
+                      workspacePath: widget.path,
+                    ),
                   ),
                 );
               });
+               Navigator.pop(context); // Close the drawer
             },
           ),
         ),
@@ -202,84 +189,59 @@ class _EditorPageState extends State<EditorPage> {
 
 class EditFile extends StatefulWidget {
   final String filePath;
-  const EditFile({Key? key, required this.filePath}) : super(key: key);
+  final String workspacePath;
+  const EditFile({Key? key, required this.filePath, required this.workspacePath}) : super(key: key);
 
   @override
   State<EditFile> createState() => _EditFileState();
 }
 
-class _EditFileState extends State<EditFile> {
-  UndoRedoController undoRedoController = UndoRedoController();
-  CodeForgeController? codeController;
+class _EditFileState extends State<EditFile> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true; // Keep the state of the editor when switching tabs
 
-  Future<LspConfig> getLsp() async {
-    Directory dir = await getApplicationSupportDirectory();
-    final executable = "${dir.path}/flutter/bin/cache/dart-sdk/bin/dart";
-    final absWorkspacePath = p.dirname(widget.filePath);
-    final data = await LspStdioConfig.start(
-      executable: executable,
-      args: ["language-server", "--protocol=lsp"],
-      workspacePath: absWorkspacePath,
-      languageId: "dart",
-    );
-    return data;
+  late final CodeForgeController codeController;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    // Give the LSP server a moment to start up.
+    // A more robust solution might involve a health check.
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        final lspConfig = LspSocketConfig(
+          serverUrl: 'ws://localhost:9000',
+          workspacePath: widget.workspacePath,
+          languageId: "dart",
+        );
+        setState(() {
+          codeController = CodeForgeController(lspConfig: lspConfig);
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    codeController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<LspConfig>(
-      future: getLsp(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-  
-        // যদি error থাকে
-        if (snapshot.hasError) {
-          return Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.error, color: Colors.red, size: 48),
-                const SizedBox(height: 10),
-                Text(
-                  "Failed to load LSP",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  snapshot.error.toString(), // error message
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {}); // retry by rebuilding
-                  },
-                  child: const Text("Retry"),
-                )
-              ],
-            ),
-          );
-        }
-  
-        if (!snapshot.hasData) {
-          return const Center(child: Text("No data received from LSP"));
-        }
-  
-        final lspConfig = snapshot.data!;
-        if (codeController == null || codeController!.lspConfig != lspConfig) {
-          codeController = CodeForgeController(lspConfig: lspConfig);
-        }
-  
-        return CodeForge(
-          undoController: undoRedoController,
-          language: langDart,
-          controller: codeController,
-          filePath: widget.filePath,
-          textStyle: GoogleFonts.jetBrainsMono(),
-        );
-      },
+    super.build(context); // Needed for AutomaticKeepAliveClientMixin
+    if (codeController == null) {
+      return const Center(child: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+      ));
+    }
+    
+    return CodeForge(
+      language: langDart,
+      controller: codeController,
+      filePath: widget.filePath,
+      textStyle: GoogleFonts.jetBrainsMono(),
     );
   }
 }

@@ -30,6 +30,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  android_intent_plus: ^3.1.0
+  web_socket_channel: ^3.0.3
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -40,7 +42,6 @@ dependencies:
   flutter_inappwebview: ^6.1.5
   process_run: ^1.2.4
   flutter_highlight: ^0.7.0
-  web_socket_channel: ^3.0.3
   font_awesome_flutter: ^10.8.0
   code_forge: ^4.3.0
   path: ^1.9.1

@@ -21,6 +21,8 @@ class MyApp extends StatelessWidget {
   Future<bool> checkPermissions() async {
     bool granted = await requestStoragePermission();
     if (!granted) {
+      // Optionally show dialog to user
+      print("Storage permission not granted!");
     }
     return granted;
   }
