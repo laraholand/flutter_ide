@@ -43,18 +43,18 @@ android {
             storePassword = keystoreProperties["storePassword"] as String?
         }
 
-        create("debug") {
-            keyAlias = keystoreProperties["keyAlias"] as String?
-            keyPassword = keystoreProperties["keyPassword"] as String?
-            storeFile = keystoreProperties["storeFile"]?.let { file(it) }
-            storePassword = keystoreProperties["storePassword"] as String?
-        }
+        //create("debug") {
+     //       keyAlias = keystoreProperties["keyAlias"] as String?
+       //     keyPassword = keystoreProperties["keyPassword"] as String?
+       //     storeFile = keystoreProperties["storeFile"]?.let { file(it) }
+     //       storePassword = keystoreProperties["storePassword"] as String?
+    //    }
     }
 
     buildTypes {
-        getByName("debug") {
-            signingConfig = signingConfigs.getByName("debug")
-        }
+   //     getByName("debug") {
+     //       signingConfig = signingConfigs.getByName("debug")
+   //     }
         getByName("release") {
             isMinifyEnabled = false
             signingConfig = signingConfigs.getByName("release")
