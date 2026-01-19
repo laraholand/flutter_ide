@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:ide/pages/editor.dart';
 import 'package:path_provider/path_provider.dart';
-import 'dart:io';
+import 'package:path/path.dart' as p;
+
+import 'package:ide/pages/editor.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -12,128 +16,199 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-void _showDialog(BuildContext context) {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController pathController = TextEditingController();
+  /// Flutter root path: /data/user/0/.../flutter/
+  Future<String> _flutterRoot() async {
+    final dir = await getApplicationSupportDirectory();
+    return "${dir.path}/flutter";
+  }
 
-  showDialog<void>(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: Text("Create Flutter Project"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: nameController,
-              decoration: InputDecoration(
-                labelText: "Project Name (lowercase)",
-                hintText: "my_app",
-              ),
+  /// Try to chmod all required flutter / dart binaries
+  Future<void> _fixPermissions(BuildContext context) async {
+    try {
+      final root = await _flutterRoot();
+
+      final targets = [
+        p.join(root, "bin"),
+        p.join(root, "bin", "flutter"),
+        p.join(root, "bin", "cache"),
+        p.join(root, "bin", "cache", "dart-sdk"),
+        p.join(root, "bin", "cache", "dart-sdk", "bin"),
+        p.join(root, "bin", "cache", "dart-sdk", "bin", "dart"),
+      ];
+
+      for (final t in targets) {
+        if (FileSystemEntity.typeSync(t) != FileSystemEntityType.notFound) {
+          await Process.run("chmod", ["-R", "+x", t]);
+        }
+      }
+    } catch (e) {
+      if (!mounted) return;
+      await showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text("Permission Error"),
+          content: SingleChildScrollView(
+            child: Text(
+              e.toString(),
+              style: const TextStyle(color: Colors.red),
             ),
-            SizedBox(height: 10),
-            TextField(
-              controller: pathController,
-              decoration: InputDecoration(
-                labelText: "Project Path",
-                hintText: "/storage/emulated/0/MyProjects",
-              ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("OK"),
             ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("Cancel"),
+      );
+    }
+  }
+
+  void _showDialog(BuildContext context) {
+    final nameController = TextEditingController();
+    final pathController = TextEditingController();
+
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Create Flutter Project"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(
+                  labelText: "Project Name (lowercase)",
+                  hintText: "my_app",
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: pathController,
+                decoration: const InputDecoration(
+                  labelText: "Project Path",
+                  hintText: "/storage/emulated/0/MyProjects",
+                ),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () async {
-              String projectName = nameController.text.trim();
-              String projectPath = pathController.text.trim();
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final projectName = nameController.text.trim();
+                final projectPath = pathController.text.trim();
 
-              // Validation
-              if (projectName.isEmpty || projectName != projectName.toLowerCase()) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Project name must be lowercase!")),
-                );
-                return;
-              }
-              if (projectPath.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Project path required!")),
-                );
-                return;
-              }
-
-              Navigator.pop(context); // close dialog
-
-              // Create project using Flutter CLI
-              String fullPath = "$projectPath/$projectName";
-
-              try {
-                ProcessResult result = await Process.run(
-                  "${await path()}flutter",
-                  ["create", projectName],
-                  workingDirectory: projectPath,
-                  runInShell: true,
-                );
-
-                if (result.exitCode == 0) {
-                  if(!mounted) return;
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditorPage(path: fullPath),
+                if (projectName.isEmpty ||
+                    projectName != projectName.toLowerCase()) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Project name must be lowercase"),
                     ),
                   );
-                } else {
-                  if(!mounted) return;
+                  return;
+                }
+
+                if (projectPath.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Error creating project")),
+                    const SnackBar(
+                      content: Text("Project path required"),
+                    ),
+                  );
+                  return;
+                }
+
+                Navigator.pop(context);
+
+                // 🔑 Permission fix before running flutter
+                await _fixPermissions(context);
+
+                final flutterBin =
+                    "${await _flutterRoot()}/bin/flutter";
+                final fullPath = "$projectPath/$projectName";
+
+                try {
+                  final result = await Process.run(
+                    flutterBin,
+                    ["create", projectName],
+                    workingDirectory: projectPath,
+                    runInShell: true,
+                  );
+
+                  if (result.exitCode == 0) {
+                    if (!mounted) return;
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => EditorPage(path: fullPath),
+                      ),
+                    );
+                  } else {
+                    if (!mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          "Flutter error:\n${result.stderr}",
+                        ),
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (!mounted) return;
+                  showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: const Text("Flutter CLI Failed"),
+                      content: Text(e.toString()),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text("OK"),
+                        ),
+                      ],
+                    ),
                   );
                 }
-              } catch (e) {
-                if(!mounted) return;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Failed to run Flutter CLI")),
-                );
-              }
-            },
-            child: Text("Create"),
-          ),
-        ],
-      );
-    },
-  );
-}
-  Future<String?> path() async{
-    Directory dir = await getApplicationSupportDirectory();
-    return "${dir.path}/flutter/bin/";
+              },
+              child: const Text("Create"),
+            ),
+          ],
+        );
+      },
+    );
   }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        TextButton(
-          onPressed: ()=>_showDialog(context),
-          child: Text("Create new project"),
-        ),
-        TextButton(
-          onPressed: () async{
-            String? selectedDir = await FilePicker.platform.getDirectoryPath();
-            if(selectedDir==null) return;
-            if(!mounted) return;
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => EditorPage(path:selectedDir)),
-            );
-          },
-          child: Text("Open existing project"),
-        ),
-      ],
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          TextButton(
+            onPressed: () => _showDialog(context),
+            child: const Text("Create new project"),
+          ),
+          TextButton(
+            onPressed: () async {
+              final selectedDir =
+                  await FilePicker.platform.getDirectoryPath();
+              if (selectedDir == null || !mounted) return;
+
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => EditorPage(path: selectedDir),
+                ),
+              );
+            },
+            child: const Text("Open existing project"),
+          ),
+        ],
+      ),
     );
   }
 }
-
