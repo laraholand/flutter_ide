@@ -200,7 +200,16 @@ class _EditFileState extends State<EditFile> with AutomaticKeepAliveClientMixin 
   @override
   bool get wantKeepAlive => true; // Keep the state of the editor when switching tabs
 
-  late final CodeForgeController codeController;
+  CodeForgeController? _codeController;
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -208,30 +217,34 @@ class _EditFileState extends State<EditFile> with AutomaticKeepAliveClientMixin 
     
     // Give the LSP server a moment to start up.
     // A more robust solution might involve a health check.
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 5), () {
       if (mounted) {
+        _showSnackBar('Attempting to connect to LSP server...');
         final lspConfig = LspSocketConfig(
           serverUrl: 'ws://localhost:9000',
           workspacePath: widget.workspacePath,
           languageId: "dart",
         );
         setState(() {
-          codeController = CodeForgeController(lspConfig: lspConfig);
+          _codeController = CodeForgeController(lspConfig: lspConfig);
+          _showSnackBar('LSP client controller initialized.');
         });
+      } else {
+        _showSnackBar('LSP client initialization skipped: widget not mounted.');
       }
     });
   }
 
   @override
   void dispose() {
-    codeController.dispose();
+    _codeController?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context); // Needed for AutomaticKeepAliveClientMixin
-    if (codeController == null) {
+    if (_codeController == null) {
       return const Center(child: CircularProgressIndicator(
         valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
       ));
@@ -239,7 +252,7 @@ class _EditFileState extends State<EditFile> with AutomaticKeepAliveClientMixin 
     
     return CodeForge(
       language: langDart,
-      controller: codeController,
+      controller: _codeController!,
       filePath: widget.filePath,
       textStyle: GoogleFonts.jetBrainsMono(),
     );
