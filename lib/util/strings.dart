@@ -33,11 +33,3 @@ String storageMessage() {
   return "Available storage is low. Minimum 7-8 GB free space is required to install the development tools.";
 }
 
-Map<String, bool> androidModules = {
-  "Gradle": true,
-  "NDK": true,
-  "CMake": false,
-  "Platform (API 36)": true,
-  "Platform-tools": true,
-  "Build-tools (36.0)": true,
-};

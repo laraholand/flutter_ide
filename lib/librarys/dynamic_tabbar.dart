@@ -371,7 +371,7 @@ class _DynamicTabBarWidgetState extends State<DynamicTabBarWidget>
     );
   }
 
-  _moveToNextTab() {
+  void _moveToNextTab() {
     if (_tabController != null &&
         _tabController!.index + 1 < _tabController!.length) {
       _tabController!.animateTo(_tabController!.index + 1);
@@ -382,7 +382,7 @@ class _DynamicTabBarWidgetState extends State<DynamicTabBarWidget>
     }
   }
 
-  _moveToPreviousTab() {
+  void _moveToPreviousTab() {
     if (_tabController != null && _tabController!.index > 0) {
       _tabController!.animateTo(_tabController!.index - 1);
     } else {

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
-import 'package:fide/pages/ide_page.dart';
 import 'package:fide/util/booleans.dart';
 import 'package:fide/util/strings.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class SetUpPage extends StatefulWidget {
-  const SetUpPage({Key? key}) : super(key: key);
+  const SetUpPage({super.key});
 
   @override
   State<SetUpPage> createState() => _SetUpPageState();
@@ -237,12 +234,7 @@ class _SetUpPageState extends State<SetUpPage> {
             TextButton(
               onPressed: () {
                 if (pageIndex >= 2) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const IdePage(),
-                    ),
-                  );
+                  
                 } else {
                   setState(() {
                     pageIndex++;
@@ -320,7 +312,7 @@ Widget _infoBox({
     decoration: BoxDecoration(
       color: const Color(0xFF353839),
       borderRadius: BorderRadius.circular(8),
-      border: Border.all(color: color.withOpacity(0.4)),
+      border: Border.all(color: color.withAlpha((255 * 0.4).round())),
     ),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -389,7 +381,7 @@ Widget _sdkSwitchTile({
         Switch(
           value: value,
           onChanged: enabled ? onChanged : null,
-          activeColor: Colors.tealAccent,
+          activeTrackColor: Colors.tealAccent,
         ),
       ],
     ),

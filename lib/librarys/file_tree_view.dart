@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:io';
-import '../style.dart';
+import 'package:fide/style.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
+
 
 late bool isParentOpen;
 String? currentDir;
