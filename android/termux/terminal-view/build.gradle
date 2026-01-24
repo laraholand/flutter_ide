@@ -3,7 +3,7 @@ apply plugin: 'com.android.library'
 android {
     namespace "com.vault.fide.view"
     compileSdkVersion 36
-    ndkVersion  "27.1.12297006"
+    ndkVersion  "29.0.14206865"
 
     dependencies {
         implementation "androidx.annotation:annotation:1.9.0"

@@ -4,7 +4,7 @@ android {
     namespace "com.vault.fide.emulator"
 
     compileSdkVersion 36
-    ndkVersion  "27.1.12297006"
+    ndkVersion  "29.0.14206865"
     defaultConfig {
         minSdkVersion 26
         targetSdkVersion 28

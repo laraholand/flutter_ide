@@ -8,7 +8,7 @@ plugins {
 android {
     namespace = "com.vault.fide"
     compileSdk = 36
-    ndkVersion = "27.1.12297006"
+    ndkVersion = "29.0.14206865"
     buildToolsVersion = "35.0.0"
 
     compileOptions {
