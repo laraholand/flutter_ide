@@ -24,10 +24,7 @@ plugins {
 }
 
 include(":app")
-<<<<<<< HEAD
-=======
 include(":termux:app")
 include(":termux:terminal-emulator")
 include(":termux:terminal-view")
 include(":termux:termux-shared")
->>>>>>> 777f43b (Auto commit from automation tool)

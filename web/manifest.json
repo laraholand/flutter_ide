@@ -1,11 +1,6 @@
 {
-<<<<<<< HEAD
-    "name": "ide",
-    "short_name": "ide",
-=======
     "name": "fide",
     "short_name": "fide",
->>>>>>> 777f43b (Auto commit from automation tool)
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
