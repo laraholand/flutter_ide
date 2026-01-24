@@ -1,18 +1,16 @@
 FAILURE: Build failed with an exception.
 * What went wrong:
-A problem was found with the configuration of task ':termux:app:mergeReleaseNativeLibs' (type 'MergeNativeLibsTask').
-  - Gradle detected a problem with the following location: '/home/runner/work/flutter_ide/flutter_ide/build/app/intermediates/merged_jni_libs/release/mergeReleaseJniLibFolders/out'.
-    Reason: Task ':termux:app:mergeReleaseNativeLibs' uses this output of task ':app:mergeReleaseJniLibFolders' without declaring an explicit or implicit dependency. This can lead to incorrect results being produced, depending on what order the tasks are executed.
+A problem was found with the configuration of task ':termux:app:mergeReleaseAssets' (type 'MergeSourceSetFolders').
+  - Gradle detected a problem with the following location: '/home/runner/work/flutter_ide/flutter_ide/build/app/intermediates/shader_assets/release/compileReleaseShaders/out'.
+    Reason: Task ':termux:app:mergeReleaseAssets' uses this output of task ':app:compileReleaseShaders' without declaring an explicit or implicit dependency. This can lead to incorrect results being produced, depending on what order the tasks are executed.
     Possible solutions:
-      1. Declare task ':app:mergeReleaseJniLibFolders' as an input of ':termux:app:mergeReleaseNativeLibs'.
-      2. Declare an explicit dependency on ':app:mergeReleaseJniLibFolders' from ':termux:app:mergeReleaseNativeLibs' using Task#dependsOn.
-      3. Declare an explicit dependency on ':app:mergeReleaseJniLibFolders' from ':termux:app:mergeReleaseNativeLibs' using Task#mustRunAfter.
+      1. Declare task ':app:compileReleaseShaders' as an input of ':termux:app:mergeReleaseAssets'.
+      2. Declare an explicit dependency on ':app:compileReleaseShaders' from ':termux:app:mergeReleaseAssets' using Task#dependsOn.
+      3. Declare an explicit dependency on ':app:compileReleaseShaders' from ':termux:app:mergeReleaseAssets' using Task#mustRunAfter.
     For more information, please refer to https://docs.gradle.org/8.14/userguide/validation_problems.html#implicit_dependency in the Gradle documentation.
 * Try:
-> Declare task ':app:mergeReleaseJniLibFolders' as an input of ':termux:app:mergeReleaseNativeLibs'
-> Declare an explicit dependency on ':app:mergeReleaseJniLibFolders' from ':termux:app:mergeReleaseNativeLibs' using Task#dependsOn
-> Declare an explicit dependency on ':app:mergeReleaseJniLibFolders' from ':termux:app:mergeReleaseNativeLibs' using Task#mustRunAfter
+> Declare task ':app:compileReleaseShaders' as an input of ':termux:app:mergeReleaseAssets'
+> Declare an explicit dependency on ':app:compileReleaseShaders' from ':termux:app:mergeReleaseAssets' using Task#dependsOn
+> Declare an explicit dependency on ':app:compileReleaseShaders' from ':termux:app:mergeReleaseAssets' using Task#mustRunAfter
 > Run with --scan to get full insights.
-BUILD FAILED in 2m 47s
-Running Gradle task 'assembleRelease'...                          168.4s
-Gradle task assembleRelease failed with exit 
+BUILD FAILED in 9m 32s

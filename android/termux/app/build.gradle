@@ -90,4 +90,7 @@ tasks.whenTaskAdded { task ->
     if (task.name == 'mergeReleaseNativeLibs') {
         task.dependsOn(':app:mergeReleaseJniLibFolders')
     }
+    if (task.name == 'mergeReleaseAssets') {
+        task.dependsOn(':app:compileReleaseShaders')
+    }
 }
