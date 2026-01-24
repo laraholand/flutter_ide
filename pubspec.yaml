@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 name: ide
+=======
+name: fide
+>>>>>>> 777f43b (Auto commit from automation tool)
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -30,12 +34,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+<<<<<<< HEAD
   android_intent_plus: ^6.0.0
   web_socket_channel: ^3.0.3
+=======
+>>>>>>> 777f43b (Auto commit from automation tool)
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+<<<<<<< HEAD
   file_picker: ^10.3.8
   archive: ^4.0.7
   path_provider: ^2.1.5
@@ -48,6 +56,16 @@ dependencies:
   google_fonts: ^7.0.2
   re_highlight: ^0.0.3
   permission_handler: ^12.0.1
+=======
+  permission_handler: ^12.0.1
+  path_provider: ^2.1.5
+  flutter_inappwebview: ^6.1.5
+  code_forge: ^4.3.0
+  file_picker: ^10.3.8
+  font_awesome_flutter: ^10.8.0
+  android_intent_plus: ^6.0.0
+  path: ^1.9.1
+>>>>>>> 777f43b (Auto commit from automation tool)
 
 dev_dependencies:
   flutter_test:
@@ -72,9 +90,16 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
+<<<<<<< HEAD
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
+=======
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/scripts/
+>>>>>>> 777f43b (Auto commit from automation tool)
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -88,9 +113,15 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
+<<<<<<< HEAD
     - family: Neofolia
       fonts:
         - asset: assets/fonts/neofolia.otf
+=======
+     - family: NeoFolia
+       fonts:
+         - asset: assets/fonts/neofolia.otf
+>>>>>>> 777f43b (Auto commit from automation tool)
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

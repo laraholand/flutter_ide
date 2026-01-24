@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # ide
+=======
+# fide
+>>>>>>> 777f43b (Auto commit from automation tool)
 
 A new Flutter project.
 
