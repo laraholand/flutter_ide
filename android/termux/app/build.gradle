@@ -86,3 +86,8 @@ dependencies {
     
 }
 
+tasks.whenTaskAdded { task ->
+    if (task.name == 'mergeReleaseNativeLibs') {
+        task.dependsOn(':app:mergeReleaseJniLibFolders')
+    }
+}
